@@ -1,0 +1,24 @@
+<button
+  type="button"
+  (click)="select.emit(null)"
+  [class.bg-blue-600]="selectedCategoryId() === null"
+  [class.text-white]="selectedCategoryId() === null"
+  [class.bg-slate-100]="selectedCategoryId() !== null"
+  [class.text-slate-700]="selectedCategoryId() !== null"
+  class="rounded-full px-5 py-3 text-base font-medium transition-colors"
+>
+  Alle
+</button>
+@for (category of categories(); track category.id) {
+  <button
+    type="button"
+    (click)="select.emit(category.id)"
+    [class.bg-blue-600]="selectedCategoryId() === category.id"
+    [class.text-white]="selectedCategoryId() === category.id"
+    [class.bg-slate-100]="selectedCategoryId() !== category.id"
+    [class.text-slate-700]="selectedCategoryId() !== category.id"
+    class="rounded-full px-5 py-3 text-base font-medium transition-colors"
+  >
+    {{ category.name }}
+  </button>
+}

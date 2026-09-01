@@ -1,0 +1,102 @@
+<div class="fixed inset-0 bg-slate-900/40 flex items-center justify-center p-4 z-10" (click)="cancel.emit()">
+  <div class="w-full max-w-lg bg-white rounded-2xl shadow-md p-8 max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+    <h2 class="text-xl font-semibold text-slate-900 mb-6">
+      {{ content() ? 'Tipp bearbeiten' : 'Neuen Tipp anlegen' }}
+    </h2>
+
+    <form (submit)="$event.preventDefault(); onSubmit()" class="space-y-4">
+      <div>
+        <label for="titel" class="block text-base font-medium text-slate-700 mb-1">Titel</label>
+        <input
+          id="titel"
+          type="text"
+          [value]="titel()"
+          (input)="onTitelInput($event)"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="beschreibung" class="block text-base font-medium text-slate-700 mb-1">Beschreibung / Anleitung</label>
+        <textarea
+          id="beschreibung"
+          rows="3"
+          [value]="beschreibung()"
+          (input)="onBeschreibungInput($event)"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ></textarea>
+      </div>
+
+      <div>
+        <label for="kategorie" class="block text-base font-medium text-slate-700 mb-1">Kategorie</label>
+        <select
+          id="kategorie"
+          [value]="kategorieId() ?? ''"
+          (change)="onKategorieChange($event)"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="" disabled>Bitte waehlen ...</option>
+          @for (category of categories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label for="bildUrl" class="block text-base font-medium text-slate-700 mb-1">Bild-URL (optional)</label>
+        <input
+          id="bildUrl"
+          type="text"
+          [value]="bildUrl()"
+          (input)="onBildUrlInput($event)"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label for="schwierigkeitsgrad" class="block text-base font-medium text-slate-700 mb-1">Schwierigkeitsgrad (optional)</label>
+        <select
+          id="schwierigkeitsgrad"
+          [value]="schwierigkeitsgrad()"
+          (change)="onSchwierigkeitsgradChange($event)"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Keine Angabe</option>
+          <option value="LEICHT">Leicht</option>
+          <option value="MITTEL">Mittel</option>
+          <option value="SCHWER">Schwer</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="hilfsmittel" class="block text-base font-medium text-slate-700 mb-1">Benoetigte Hilfsmittel (optional)</label>
+        <input
+          id="hilfsmittel"
+          type="text"
+          [value]="hilfsmittel()"
+          (input)="onHilfsmittelInput($event)"
+          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <app-error-message [message]="errorMessage()" />
+
+      <div class="flex gap-3 pt-2">
+        <button
+          type="button"
+          (click)="cancel.emit()"
+          class="flex-1 rounded-lg bg-slate-100 text-slate-700 text-lg font-medium py-3 hover:bg-slate-200 transition-colors"
+        >
+          Abbrechen
+        </button>
+        <button
+          type="submit"
+          [disabled]="!isValid() || isSaving()"
+          class="flex-1 rounded-lg bg-blue-600 text-white text-lg font-medium py-3 hover:bg-blue-700 disabled:opacity-50 transition-colors"
+        >
+          {{ isSaving() ? 'Speichern ...' : 'Speichern' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

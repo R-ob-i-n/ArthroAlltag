@@ -1,0 +1,42 @@
+# System files
+.DS_Store
+Thumbs.db
+
+### Angular / Node ###
+angular-frontend/dist/
+angular-frontend/tmp/
+angular-frontend/out-tsc/
+angular-frontend/node_modules/
+angular-frontend/.angular/cache/
+npm-debug.log
+yarn-error.log
+angular-frontend/.sass-cache/
+angular-frontend/connect.lock
+angular-frontend/coverage/
+angular-frontend/libpeerconnection.log
+testem.log
+angular-frontend/typings/
+angular-frontend/__screenshots__/
+
+### Java / Maven ###
+backend/target/
+backend/HELP.md
+backend/.mvn/wrapper/maven-wrapper.jar
+
+### IDEs ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.classpath
+.project
+.settings/
+
+### VS Code (keep shared config, ignore the rest) ###
+angular-frontend/.vscode/*
+!angular-frontend/.vscode/settings.json
+!angular-frontend/.vscode/tasks.json
+!angular-frontend/.vscode/launch.json
+!angular-frontend/.vscode/extensions.json
+!angular-frontend/.vscode/mcp.json
+backend/.vscode/
