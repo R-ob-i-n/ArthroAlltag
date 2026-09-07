@@ -11,4 +11,6 @@ public interface PatientModuleAccessRepository extends JpaRepository<PatientModu
     List<PatientModuleAccess> findByPatientId(String patientId);
 
     boolean existsByPatientIdAndModulId(String patientId, Integer modulId);
+
+    void deleteByPatientIdAndModulId(String patientId, Integer modulId);
 }

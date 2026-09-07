@@ -95,4 +95,14 @@ public class TherapeutController {
         moduleService.unlockModule(therapeutId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    /** Nimmt eine Modul-Freischaltung wieder zurueck, z.B. wenn sie versehentlich erteilt wurde. */
+    @DeleteMapping("/patients/{patientId}/modules/{modulId}")
+    public ResponseEntity<Void> revokeModule(
+            @P("therapeutId") @PathVariable String therapeutId,
+            @PathVariable String patientId,
+            @PathVariable Integer modulId) {
+        moduleService.revokeModule(therapeutId, patientId, modulId);
+        return ResponseEntity.noContent().build();
+    }
 }

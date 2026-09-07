@@ -26,4 +26,8 @@ export class ModulService {
   unlockModule(therapeutId: string, request: UnlockModuleRequest): Observable<void> {
     return this.http.post<void>(`${API_BASE_URL}/therapeuts/${therapeutId}/unlock-module`, request);
   }
+
+  revokeModule(therapeutId: string, patientId: string, modulId: number): Observable<void> {
+    return this.http.delete<void>(`${API_BASE_URL}/therapeuts/${therapeutId}/patients/${patientId}/modules/${modulId}`);
+  }
 }

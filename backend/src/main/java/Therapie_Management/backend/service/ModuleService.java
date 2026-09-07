@@ -57,18 +57,47 @@ public class ModuleService {
     }
 
     public void unlockModule(String therapeutId, UnlockModuleRequest request) {
-        Therapeut therapeut = therapeutRepository.findById(therapeutId)
-            .orElseThrow(() -> new ResourceNotFoundException("Therapeut nicht gefunden: " + therapeutId));
-        Patient patient = patientRepository.findById(request.patientId())
-            .orElseThrow(() -> new ResourceNotFoundException("Patient nicht gefunden: " + request.patientId()));
-        Module modul = moduleRepository.findById(request.modulId())
-            .orElseThrow(() -> new ResourceNotFoundException("Modul nicht gefunden: " + request.modulId()));
+        Therapeut therapeut = findTherapeutOrThrow(therapeutId);
+        Patient patient = findPatientOrThrow(request.patientId());
+        Module modul = findModulOrThrow(request.modulId());
 
         if (patientModuleAccessRepository.existsByPatientIdAndModulId(request.patientId(), request.modulId())) {
             throw new ValidationException("Modul ist fuer diesen Patienten bereits freigeschaltet");
         }
 
         patientModuleAccessRepository.save(new PatientModuleAccess(patient, modul, therapeut));
+    }
+
+    /**
+     * Nimmt eine Freischaltung wieder zurueck (z.B. weil sie versehentlich erteilt wurde).
+     * Geloescht wird nur der Freischalt-Eintrag - das Modul selbst bleibt bestehen und kann
+     * jederzeit erneut freigeschaltet werden.
+     */
+    public void revokeModule(String therapeutId, String patientId, Integer modulId) {
+        findTherapeutOrThrow(therapeutId);
+        findPatientOrThrow(patientId);
+        findModulOrThrow(modulId);
+
+        if (!patientModuleAccessRepository.existsByPatientIdAndModulId(patientId, modulId)) {
+            throw new ValidationException("Modul ist fuer diesen Patienten nicht freigeschaltet");
+        }
+
+        patientModuleAccessRepository.deleteByPatientIdAndModulId(patientId, modulId);
+    }
+
+    private Therapeut findTherapeutOrThrow(String therapeutId) {
+        return therapeutRepository.findById(therapeutId)
+            .orElseThrow(() -> new ResourceNotFoundException("Therapeut nicht gefunden: " + therapeutId));
+    }
+
+    private Patient findPatientOrThrow(String patientId) {
+        return patientRepository.findById(patientId)
+            .orElseThrow(() -> new ResourceNotFoundException("Patient nicht gefunden: " + patientId));
+    }
+
+    private Module findModulOrThrow(Integer modulId) {
+        return moduleRepository.findById(modulId)
+            .orElseThrow(() -> new ResourceNotFoundException("Modul nicht gefunden: " + modulId));
     }
 
     private ModuleResponse toResponse(Module modul) {

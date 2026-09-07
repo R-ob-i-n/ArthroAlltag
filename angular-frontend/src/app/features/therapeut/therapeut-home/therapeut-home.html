@@ -102,9 +102,19 @@
                 }
               </div>
               @if (isModuleUnlocked(modul.id)) {
-                <span class="shrink-0 rounded-full bg-green-50 text-green-700 text-base font-medium px-4 py-3">
-                  ✓ Freigeschaltet
-                </span>
+                <div class="shrink-0 flex items-center gap-2">
+                  <span class="rounded-full bg-green-50 text-green-700 text-base font-medium px-4 py-3">
+                    ✓ Freigeschaltet
+                  </span>
+                  <button
+                    type="button"
+                    (click)="resetModule(modul)"
+                    [disabled]="revokingModuleId() === modul.id"
+                    class="rounded-lg bg-slate-100 text-slate-700 text-base font-medium px-4 py-3 hover:bg-slate-200 disabled:opacity-50 transition-colors"
+                  >
+                    {{ revokingModuleId() === modul.id ? 'Zuruecksetzen ...' : 'Zuruecksetzen' }}
+                  </button>
+                </div>
               } @else {
                 <button
                   type="button"

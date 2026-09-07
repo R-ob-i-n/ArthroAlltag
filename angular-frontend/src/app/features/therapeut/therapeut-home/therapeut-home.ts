@@ -45,6 +45,7 @@ export class TherapeutHome {
   protected readonly unlockedModuleIds = signal<Set<number>>(new Set());
   protected readonly isLoadingModules = signal(false);
   protected readonly unlockingModuleId = signal<number | null>(null);
+  protected readonly revokingModuleId = signal<number | null>(null);
   protected readonly moduleErrorMessage = signal<string | null>(null);
 
   constructor() {
@@ -182,6 +183,32 @@ export class TherapeutHome {
       error: (error: { error?: ErrorResponse }) => {
         this.moduleErrorMessage.set(error.error?.message ?? 'Modul konnte nicht freigeschaltet werden.');
         this.unlockingModuleId.set(null);
+      }
+    });
+  }
+
+  protected resetModule(modul: Modul): void {
+    const therapeutId = this.authService.currentUser()?.userId;
+    const patientId = this.selectedPatientId();
+    if (!therapeutId || !patientId || !confirm(`"${modul.name}" wirklich zuruecksetzen? Der Patient sieht das Modul danach nicht mehr.`)) {
+      return;
+    }
+
+    this.revokingModuleId.set(modul.id);
+    this.moduleErrorMessage.set(null);
+
+    this.modulService.revokeModule(therapeutId, patientId, modul.id).subscribe({
+      next: () => {
+        this.unlockedModuleIds.update((ids) => {
+          const updated = new Set(ids);
+          updated.delete(modul.id);
+          return updated;
+        });
+        this.revokingModuleId.set(null);
+      },
+      error: (error: { error?: ErrorResponse }) => {
+        this.moduleErrorMessage.set(error.error?.message ?? 'Modul konnte nicht zurueckgesetzt werden.');
+        this.revokingModuleId.set(null);
       }
     });
   }
