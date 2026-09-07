@@ -2,6 +2,10 @@
 .DS_Store
 Thumbs.db
 
+### Projekt-Notizen (nicht Teil des Codebase-Repos) ###
+/Claude.md
+/STATUS.md
+
 ### Angular / Node ###
 angular-frontend/dist/
 angular-frontend/tmp/
